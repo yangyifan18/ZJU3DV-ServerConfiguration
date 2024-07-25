@@ -54,7 +54,7 @@ sudo apt install openssh-server zsh
 
 ### 4. 配置sudo/个人账号
 
-首先查询uid和gid，然后添加账号
+首先查询uid和gid，然后添加账号(访问10.76.5.248:12243，服务器zjuv06)
 ```
 sudo groupadd linhaotong -g 20191000
 sudo useradd linhaotong -u 20191000 -g 20191000 -s /usr/bin/zsh -m -p $(perl -e 'print crypt($ARGV[0], "password")' 'linhaotong@zju3dv')
