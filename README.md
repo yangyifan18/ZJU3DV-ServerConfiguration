@@ -3,19 +3,19 @@ This is a guidance for new server configuration
 
 ## MENU  
 **线下部分**  
-1.系统安装  
-2.配置网络  
-3.更新浙大源  
-4.配置个人账号
+[1.系统安装](#1-装系统ubuntu最新lts系统--1)  
+[2.配置网络](#2-配置网络)  
+[3.更新浙大源](#3-更新浙大源)  
+[4.配置个人账号](#4-配置sudo个人账号)
 
 **远程部分**  
-5.配置remote nfs盘  
-6.安装nvidia驱动和cuda  
-7.配置proxy  
-8.常用软件安装
-9.使用systemd创建自启动服务
+[5.配置remote nfs盘](#5-配置remote-nfs盘)  
+[6.安装nvidia驱动和cuda](#6-安装nvidia驱动和cuda)  
+[7.配置proxy](#7-配置proxy)  
+[8.常用软件安装](#8-常用软件安装)  
+[9.使用systemd创建自启动服务](#9-使用systemd创建自启动服务)
 
-### 1. 装系统：ubuntu最新lts系统
+### 1. 装系统：ubuntu最新lts系统  
 
 机器命名：[https://www.notion.so/haotong/d4fb021589ce4838829b13079d797de3?v=8d5ec6fede6245a8a66a02361c6176a1&pvs=4](https://www.notion.so/d4fb021589ce4838829b13079d797de3?pvs=21)  
 安装完成后将配置与ip填入notion表格中  
@@ -192,6 +192,41 @@ sudo service autofs restart
 ```
 
 ### 6. 安装nvidia驱动和cuda
+见`install_cuda.sh`
+```
+#nvidia-drivers
+sudo apt-get remove --purge nvidia*
+sudo vim /etc/modprobe.d/blacklist-nouveau.conf
+### 添加 
+### blacklist nouveau
+### options nouveau modeset=0
+
+sudo update-initramfs -u
+sudo reboot
+lsmod | grep nouveau
+
+cd /mnt/remote/D005/Softwares
+
+sudo service gdm3 stop
+sudo chmod a+x NVIDIA-Linux-x86_64-550.100.run
+sudo ./NVIDIA-Linux-x86_64-550.100.run --no-opengl-lib
+sudo service gdm3 restart
+
+nvidia-smi
+
+#cuda
+sudo wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda_12.1.1_530
+.30.02_linux.run
+sudo sh cuda_12.1.1_530.30.02_linux.run
+
+export PATH="/usr/local/cuda-{version}/bin:$PATH"
+export LD_LIBRARY_PATH="/usr/local/cuda-{version}/lib64/:$LD_LIBRARY_PATH"
+
+#cudnn
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cudnn9-cuda-12
+```
 
 ### 7. 配置proxy
 
@@ -217,3 +252,77 @@ ps aux | grep 'ss-local'
 ```
 
 ### 8. 常用软件安装
+
+#### 8.1 安装docker
+
+```
+proxy curl https://get.docker.com | proxy sh \
+  && sudo systemctl --now enable docker
+```
+```
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+      && proxy curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+      && proxy curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+```
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2
+sudo systemctl restart docker
+```
+```
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+配置代理
+```
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo vim /etc/systemd/system/docker.service.d/http_proxy.conf 
+[Service] 
+Environment="HTTP_PROXY=http://localhost:8118" 
+Environment="HTTPS_PROXY=http://localhost:8118"
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+docker info
+```
+
+#### 8.2 安装blender
+
+```
+proxy wget https://mirror.clarkson.edu/blender/release/Blender4.0/blender-4.0.2-linux-x64.tar.xz
+```
+
+### 9. 使用systemd创建自启动服务
+
+1.创建一个新的systemd服务文件，例如`/etc/systemd/system/mycustomservice.service`
+```
+[Unit]
+Description=My Custom Startup Script
+
+[Service]
+ExecStart=/home/linhaotong/frp_0.34.3_linux_amd64/frpc_new -c /home/linhaotong/frp_0.34.3_linux_amd64/frpc_hz.ini
+
+[Install]
+WantedBy=multi-user.target
+```
+
+2.使该服务可用
+```
+sudo systemctl enable mycustomservice.service
+```
+
+3.可以选择现在启动服务，测试它是否正常工作
+```
+sudo systemctl start mycustomservice.service
+```
+
+创建一个ss-local service
+```
+sudo touch /etc/systemd/system/mysslocal.service
+echo '[Unit]\nDescription=My Custom Startup Script to load sslocal\n' | sudo tee -a  /etc/systemd/system/mysslocal.service
+echo '[Service]\nExecStart=ss-local -s 10.76.2.225 -p 9050 -k AYMk77B:PhX|=n>~ -l 1080 -m aes-256-cfb\n' | sudo tee -a /etc/systemd/system/mysslocal.service
+echo '[Install]\nWantedBy=multi-user.target' | sudo tee -a /etc/systemd/system/mysslocal.service
+sudo systemctl enable mysslocal.service
+sudo systemctl start mysslocal.service
+```
