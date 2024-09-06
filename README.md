@@ -17,7 +17,7 @@ This is a guidance for new server configuration
 
 ### 1. 装系统：ubuntu最新lts系统  
 
-机器命名：询问admin获得notion表格
+机器命名：询问admin获得notion表格  
 安装完成后将配置与ip填入notion表格中  
 ```
 机器名：zjuvxx  
@@ -60,7 +60,7 @@ sudo groupadd linhaotong -g 20191000
 sudo useradd linhaotong -u 20191000 -g 20191000 -s /usr/bin/zsh -m -p $(perl -e 'print crypt($ARGV[0], "password")' 'linhaotong@zju3dv')
 sudo usermod -aG sudo linhaotong
 ```
-建议将上面的内容和`public key`写在一个sh内，这个sh存在已配好的服务器上，方便使用
+建议将上面的内容和`public key`写在一个sh内，这个sh存在已配好的服务器上，方便使用  
 **！！IMPORTANT！！**: 关闭密码登录，防止服务器被攻击  
 ```
 vim /etc/ssh/sshd_config
