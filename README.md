@@ -17,7 +17,7 @@ This is a guidance for new server configuration
 
 ### 1. 装系统：ubuntu最新lts系统  
 
-机器命名：REMOVED)  
+机器命名：询问admin获得notion表格
 安装完成后将配置与ip填入notion表格中  
 ```
 机器名：zjuvxx  
