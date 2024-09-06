@@ -61,6 +61,12 @@ sudo useradd linhaotong -u 20191000 -g 20191000 -s /usr/bin/zsh -m -p $(perl -e 
 sudo usermod -aG sudo linhaotong
 ```
 建议将上面的内容和`public key`写在一个sh内，这个sh存在已配好的服务器上，方便使用
+**！！IMPORTANT！！**: 关闭密码登录，防止服务器被攻击  
+```
+vim /etc/ssh/sshd_config
+# 添加
+PasswordAuthentication no
+```
 
 接下来**建议关闭系统自动更新**，防止因为内核更新导致的显卡/网卡掉了的问题  
 
