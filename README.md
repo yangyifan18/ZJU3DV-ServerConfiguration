@@ -17,7 +17,7 @@ This is a guidance for new server configuration
 
 ### 1. 装系统：ubuntu最新lts系统  
 
-机器命名：[https://www.notion.so/haotong/d4fb021589ce4838829b13079d797de3?v=8d5ec6fede6245a8a66a02361c6176a1&pvs=4](https://www.notion.so/d4fb021589ce4838829b13079d797de3?pvs=21)  
+机器命名：询问admin获得notion表格
 安装完成后将配置与ip填入notion表格中  
 ```
 机器名：zjuvxx  
