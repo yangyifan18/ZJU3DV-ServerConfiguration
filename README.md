@@ -69,7 +69,10 @@ PasswordAuthentication no
 ```
 
 接下来**建议关闭系统自动更新**，防止因为内核更新导致的显卡/网卡掉了的问题  
-
+```
+# all switch to 0
+sudo vim /etc/apt/apt.conf.d/20auto-upgrades
+```
 
 ***
 
