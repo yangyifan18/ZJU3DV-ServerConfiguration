@@ -29,7 +29,7 @@ This is a guidance for new server configuration
 
 在ubuntu有线网络设置界面，将ipv4的`DHCP`选项改为`Manual `   
 尝试ping`10.76.5.`选择一个ping不通的ip  
-`Netmask`设置为255.255.255.248，`Gateway`设置为10.76.0.10  
+`Netmask`设置为255.255.248.0，`Gateway`设置为10.76.0.10  
 `DNS`为10.10.0.21
 
 ### 3. 更新浙大源
