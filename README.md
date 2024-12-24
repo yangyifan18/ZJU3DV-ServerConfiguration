@@ -56,9 +56,9 @@ sudo apt install openssh-server zsh
 
 首先查询uid和gid，然后添加账号(访问REDACTED_IP:12243，服务器zjuv06)
 ```
-sudo groupadd linhaotong -g 20191000
-sudo useradd linhaotong -u 20191000 -g 20191000 -s /usr/bin/zsh -m -p $(perl -e 'print crypt($ARGV[0], "password")' 'REMOVED')
-sudo usermod -aG sudo linhaotong
+sudo groupadd $username -g $uid
+sudo useradd $username -u $uid -g $uid -s /usr/bin/zsh -m -p $(perl -e 'print crypt($ARGV[0], "password")' '{yourpasswd}')
+sudo usermod -aG sudo username
 ```
 建议将上面的内容和`public key`写在一个sh内，这个sh存在已配好的服务器上，方便使用  
 **！！IMPORTANT！！**: 关闭密码登录，防止服务器被攻击  
@@ -190,12 +190,7 @@ sudo vim /etc/auto.master
 ```
 sudo vim /etc/auto.nfs
 添加
-D001 -fstype=nfs4 REDACTED_IP:/mnt/data
-D002 -fstype=nfs4 REDACTED_IP:/mnt/data
-D003 -fstype=nfs4 REDACTED_IP:/mnt/data
-D004 -fstype=nfs4 REDACTED_IP:/mnt/data
-D005 -fstype=nfs4 REDACTED_IP:/mnt/data
-D006 -fstype=nfs4 REDACTED_IP:/mnt/data
+ip地址与硬盘名称（询问管理员）
 
 sudo service autofs restart
 ```
